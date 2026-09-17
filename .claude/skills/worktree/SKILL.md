@@ -168,6 +168,27 @@ match. Commits beyond the PR head still count as work and still refuse.
 
 It also refuses a directory that is not a registered worktree, and refuses the main tree.
 
+### When it refuses on untracked notes files
+
+The usual reason for a refusal on a merged PR is a handful of untracked working files in
+the worktree root: a `pr<NUMBER>-description.md`, a `notes-*.md` plan, a review of a
+superseded PR, a reference patch. These are Tom's notes, not cruft, and `--force` would
+throw them away. **Do not reach for `--force`.** Rescue them first, then re-run the
+script:
+
+1. Look at each listed file (`head`) to confirm it is notes rather than real code.
+2. Create `pr-descriptions/pr<NUMBER>-notes/` in the main tree
+   (`/Users/aldcroft/git/astropy/pr-descriptions/` already holds the other PR
+   descriptions and is untracked there). Use the PR number when it is known; fall back
+   to the branch name (`pr-descriptions/<branch>-notes/`) when it is not.
+3. `mv` the listed files into that directory. Keep their names unchanged.
+4. Re-run `remove-worktree.sh`; it now passes.
+5. If a memory note references the worktree or those files, update it to point at the
+   new location and record that the PR merged and the worktree is gone.
+
+Anything that is *not* notes — a stray `.py` probe script, edited tracked files, unpushed
+commits — is still a refusal to stop on and show the user, not something to move.
+
 The branch is kept unless `--delete-branch` is given, which uses `git branch -d` (so an
 unmerged branch survives). `--force` overrides the refusals and discards the work — only
 use it when the user has said so explicitly, after showing them what would be lost.

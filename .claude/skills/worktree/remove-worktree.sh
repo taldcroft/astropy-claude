@@ -118,7 +118,9 @@ fi
 
 if [[ $problems == 1 ]]; then
     [[ $force == 1 ]] || die "refusing to remove $wt -- see above
-       push or commit the work, or re-run with --force to discard it"
+       push or commit the work, or re-run with --force to discard it
+       untracked notes (descriptions, plans, reviews, patches) belong in
+       $main_tree/pr-descriptions/pr<NUMBER>-notes/ -- move them there, then re-run"
     note "--force given: proceeding despite the above"
 fi
 

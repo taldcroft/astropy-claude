@@ -105,6 +105,11 @@ Two rules follow, and they are the only ways to get this wrong:
   not standing in it. Recover by re-running the editable install from `~/git/astropy`.
 - **Always run tests from inside the worktree directory.** The shadowing is cwd-dependent.
   `conda run -n astropy-dev` pins the interpreter; the cwd pins the source tree. Both matter.
+- **Always `python -m pytest`, never bare `pytest`.** Only `python -m` puts the cwd on
+  `sys.path`. The `pytest` script does not, so the `pytest-astropy` plugins (loaded before
+  any conftest) import `astropy` from the main tree via the editable-install finder, and
+  pytest then fails with `ImportPathMismatchError` on `astropy/conftest.py`, naming both
+  trees. In the main tree the two happen to agree, which is why bare `pytest` works there.
 
 ### Setting up a worktree
 
