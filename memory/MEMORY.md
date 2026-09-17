@@ -3,3 +3,6 @@
 - [Astropy CI stale first-time contributor](astropy-ci-stale-first-time-contributor.md) — no Actions runs and no Approve button on an old fork PR: close and reopen re-triggers CI
 - [Worktree script imports main tree](worktree-script-imports-main-tree.md) — a script run by path from a worktree imports the main astropy tree; use PYTHONPATH=$PWD (and conda run drops stdin heredocs)
 - [Astropy no contributor-fork remotes](astropy-no-contributor-fork-remotes.md) — only origin/upstream remain since 2026-09-08; fetch PR heads via upstream pull refs, never re-add fork remotes.
+- [TimeSeries primary_key fix (#20297)](timeseries-primary-key-20297.md) — timeseries PR #20361 merged 2026-09-17 (worktree removed, notes in main tree pr-descriptions/pr20361-notes/); table PR #20362 still open in worktree astropy-pr-table-primary-key-from-indices
+- [Table index memory leak fix (#16089)](table-index-memory-leak-16089.md) — worktree astropy-pr-table-fix-index-memory-leak, changelog named 20396 provisionally, uncommitted 2026-09-14
+- [Skills live in astropy-claude repo](skills-live-in-astropy-claude-repo.md) — a worktree .claude/ resolves to the ~/git/astropy-claude git repo; new skills land there untracked and must be committed in that repo, not astropy
