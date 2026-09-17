@@ -34,7 +34,7 @@ These were decided by the maintainers on #20276 and are not reopened per PR:
   precision for reviewability is deliberate.
 - **Do not touch test modules.**
 
-Expect reviewers (neutrinoceros, TallJimbo, timj) who are more typing-strict than this
+Expect some reviewers to be more typing-strict than this
 goal. The productive pattern: take cheap precision wins that also help a human reader
 (that is how `@overload` got in), and decline scope creep with a one-line reason.
 
