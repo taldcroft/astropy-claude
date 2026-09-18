@@ -177,7 +177,9 @@ that are not build cruft, or commits that exist on no remote.
 
 ## Committing changes
 
-Never commit a change without stopping for review first.
+Commit when a unit of work is complete and verified, with a clear message; no need
+to stop for review before committing. Never push or open a PR without stopping for
+review first.
 
 ## Commands
 
