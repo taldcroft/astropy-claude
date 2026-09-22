@@ -181,6 +181,22 @@ Commit when a unit of work is complete and verified, with a clear message; no ne
 to stop for review before committing. Never push or open a PR without stopping for
 review first.
 
+### Never merge `main` — always rebase
+
+The astropy workflow is rebase-only. When a branch falls behind, or when a PR shows a
+merge conflict, fetch and **rebase** onto `upstream/main`:
+
+```bash
+git fetch upstream
+git rebase upstream/main        # resolve conflicts here, then: git rebase --continue
+git push --force-with-lease     # only after stopping for review, per above
+```
+
+Never `git merge main` / `git merge upstream/main`, and never resolve a conflict by
+merging — that puts a merge commit in the branch, which is not how PRs land here. This
+holds for conflicts surfaced in the GitHub UI too: do not use its "Resolve conflicts" /
+"Update branch" buttons, which merge.
+
 ## Commands
 
 Astropy is a setuptools + Cython/C project installed in editable mode. The working tree
