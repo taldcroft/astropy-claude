@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh pr *)",
+      "Bash(python3 -c ' *)",
+      "WebFetch(domain:docs.astropy.org)",
+      "Bash(conda run *)",
+      "Bash(gh api *)",
+      "Bash(git worktree *)",
+      "Bash(gh issue *)",
+      "Bash(gh search *)"
+    ],
+    "ask": [
+      "Bash(gh pr create *)",
+      "Bash(gh pr edit *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Edit(**/pr*-description.md)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/ask-before-publish.sh",
+            "statusMessage": "Checking for commit/push/PR-description writes"
+          }
+        ]
+      }
+    ]
+  }
+}

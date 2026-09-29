@@ -11,7 +11,8 @@ while this is not.
 | --- | --- |
 | `CLAUDE.md` | Project instructions: environment, worktrees, testing, per-subpackage architecture notes |
 | `.claude/skills/` | `worktree`, `pr-description`, `issue-triage` |
-| `.claude/settings.local.json` | Permission allowlist and the hook that blocks commit/push/PR without review |
+| `.claude/settings.local.json` | Permission allow/ask rules and the hook wiring |
+| `.claude/hooks/` | `ask-before-publish.sh`: forces a prompt before commit, push, PR create/edit, or a PR-description write |
 | `.claude/handoffs/` | Scratch left over from individual PRs, safe to prune |
 | `memory/` | The memory store: one fact per file, indexed by `MEMORY.md` |
 
@@ -55,7 +56,10 @@ derived from the astropy path, so it changes with it.
 
 `.claude/settings.local.json` is normally a gitignored, machine-local file. It is kept
 here on purpose: the permission allowlist and the review hook are part of the workflow,
-and losing them means re-approving everything. It holds no secrets.
+and losing them means re-approving everything. It holds no secrets. A global gitignore
+rule (`**/.claude/settings.local.json`) would normally hide it, so it was added with
+`git add -f`; now that it is tracked, the ignore rule no longer applies and new approvals
+show up in `git status` like any other change.
 
 `CLAUDE.md` mixes two kinds of content. The architecture notes on `time`, `table` and
 `io.ascii`, and the testing gotchas, describe astropy itself and could be contributed
