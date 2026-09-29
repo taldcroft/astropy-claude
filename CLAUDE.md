@@ -177,9 +177,17 @@ that are not build cruft, or commits that exist on no remote.
 
 ## Committing changes
 
-Commit when a unit of work is complete and verified, with a clear message; no need
-to stop for review before committing. Never push or open a PR without stopping for
-review first.
+**Always ask before each of these**, even mid-task and even when an earlier one was
+approved:
+
+- making a git commit (propose the message and the staged files, then wait);
+- pushing anything to GitHub;
+- writing or updating a PR description, whether the local `pr<N>-description.md`
+  file or the PR body on GitHub.
+
+`.claude/settings.local.json` enforces these with `ask` rules and the
+`.claude/hooks/ask-before-publish.sh` PreToolUse hook; treat the prompt as the
+checkpoint, not a formality to route around.
 
 ### Never merge `main` — always rebase
 

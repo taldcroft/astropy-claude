@@ -5,8 +5,9 @@ description: Write an astropy pull request description to a `pr<NUMBER>-descript
 
 # Writing an astropy PR description
 
-Produce a **file**, not a `gh pr create` call. Do not create, edit, or push the PR
-itself unless explicitly asked — the user reviews the file first.
+Produce a **file**, not a `gh pr create` call. **Ask before writing or updating the
+file**, and do not create, edit, or push the PR itself unless explicitly asked — the
+user reviews the file first.
 
 ## Output file
 
