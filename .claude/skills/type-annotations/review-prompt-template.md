@@ -38,6 +38,9 @@ noise and will be discarded:
   `Any` rather than a protocol, `list` rather than `list[str]` — do not report these
   unless the annotation is *contradicted* by the code, not merely looser than possible.
 - **Bare `**kwargs` is intentional** and exempted via ruff ANN003.
+- **`from __future__ import annotations` is intentional**, as is which imports sit under
+  `if TYPE_CHECKING:` (only circular imports and optional dependencies). Do not report
+  either; report a name that is not imported at all.
 - **<Any deliberately skipped modules, e.g. `astropy/table/bst.py` (deprecated)>.**
 - Style, formatting and import ordering are already enforced by ruff and pre-commit.
   Do not report them.

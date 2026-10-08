@@ -22,7 +22,19 @@ These were decided by the maintainers on #20276 and are not reopened per PR:
 
 - **Static type checking is a non-goal.** Never add or narrow an annotation whose only
   justification is satisfying mypy/pyright.
-- **Runtime annotation retrieval (`get_type_hints()`) is a non-goal.**
+- **Runtime annotation retrieval (`get_type_hints()`) is a non-goal** — but do not
+  make it worse for free. Typing-only imports that do not create a cycle go at runtime,
+  not under `TYPE_CHECKING` (see "Imports" under Conventions). That costs nothing in
+  readability and is what runtime tools and Python 3.14's lazy annotations need.
+- **Keep `from __future__ import annotations` until 3.13 is dropped.** nstarman asked on
+  #20276 (2026-10-06) to drop it in favour of quoting only the names that need it, as
+  `astropy.cosmology` does; the newer astropy preference is to avoid the import. The
+  author's position: these annotations are for humans, and the quoting
+  (`Union[str, "Table"]`, `-> "TableGroups"`) is a readability regression that buys
+  nothing at runtime — measured, both styles resolve exactly the same annotations (see
+  "Why `__future__` stays"). Check the PR thread for the current state before starting a
+  new subpackage; if the maintainers rule the other way, the mechanical conversion is
+  described in that section too.
 - **Astropy ships no `py.typed`.** Under PEP 561 that means downstream checkers ignore
   inline annotations, which is the agreed mitigation for shipping imprecise ones. If
   anyone proposes adding `py.typed`, everything changes — stop and take it to the
@@ -74,7 +86,12 @@ worktree down. Say so in the handoff.
 ```bash
 python .claude/skills/type-annotations/count-annotations.py astropy/<pkg> --gaps --skip <deprecated>.py
 python .claude/skills/type-annotations/count-annotations.py astropy/<pkg> --ref <base-sha> --skip <deprecated>.py
+PYTHONPATH=$PWD python .claude/skills/type-annotations/check-type-hints.py astropy.<pkg> --skip <deprecated>
 ```
+
+The second script is the runtime view: how many annotated functions `get_type_hints()`
+resolves. Record it at the start and the end; it should rise as typing-only imports move
+to runtime, and must never fall.
 
 A def is done when it has a return annotation and every parameter annotated; a bare
 `**kwargs` is exempt because `.ruff.toml` ignores ANN003. Nested functions and
@@ -89,9 +106,9 @@ writing the annotations is mechanical.
 
 Any alias two modules want goes in a **private** `astropy/<pkg>/_typing.py` — private
 because most such aliases resolve to `Any` and making them public API is a commitment.
-Every alias gets a docstring so it hovers usefully. Consumers import it inside
-`if TYPE_CHECKING:`. The module itself is runtime-importable: its own imports of the
-concrete classes sit under `TYPE_CHECKING`, so there is no import cycle.
+Every alias gets a docstring so it hovers usefully. Consumers import it **at runtime**:
+`type` statements evaluate lazily, so `_typing.py` can keep its own imports of the
+concrete classes under `TYPE_CHECKING` and still be imported anywhere without a cycle.
 
 For `table` the four were `ColumnLike` (a `Column`, `MaskedColumn` or any mixin — `Any`
 because mixins share no base class, only a working `info`), `DataLike`, `TableLike` and
@@ -149,12 +166,27 @@ comment, which is why `table.py` looks different from `table_helpers.py`. Get th
 and the docstring becomes a no-op expression and ruff flags every later import as E402.
 Then `from typing import TYPE_CHECKING, Any, Literal, Self, overload` as needed.
 
-**`TYPE_CHECKING` block** after all runtime imports: `collections.abc` names,
-`numpy.typing as npt`, `astropy.units.typing.UnitLike`, the package's `_typing` aliases,
-and any class that would create an import cycle (`Table` from a module `table.py`
-imports). A module that already imports `groups` or `pprint` at runtime spells
-`groups.ColumnGroups` / `pprint.TableFormatter` rather than adding a `TYPE_CHECKING`
-import for them.
+**Imports: runtime unless that is impossible.** Put typing-only imports in the normal
+import block: `collections.abc`, `numbers`, `types`, `contextlib`, `numpy.typing as npt`,
+`astropy.units` / `astropy.units.typing`, the package's `_typing` aliases, and package
+classes whenever the import does not cycle. `TYPE_CHECKING` is only for:
+
+- **circular imports** — e.g. `Table` in `column`, `groups`, `row`, `index`, `pprint`,
+  `info`, `connect`, `sorted_array`, which `table.py` imports at load time;
+- **optional dependencies** (pandas, narwhals, IPython) — a runtime import would fail
+  without them, or charge every user their import time;
+- **other subpackages that cycle back** (`astropy.coordinates.SkyCoord` from `table`).
+
+Whether an import cycles is not guessable — test it: move the import out of the block
+and run `python -c "import astropy.<pkg>, astropy.<pkg>.<mod>"` in a fresh process (from
+the worktree, `PYTHONPATH=$PWD`). A module that is only imported lazily, inside
+functions (`_dataframes`, `notebook_backends`), can usually import `Table` at runtime.
+Measure the result with `check-type-hints.py`. Keep the `TYPE_CHECKING` block *after*
+`__all__` only if it was already there; never let runtime imports end up below
+`__all__` as a separate group — merge them into the main import block.
+
+A module that already imports `groups` or `pprint` at runtime spells
+`groups.ColumnGroups` / `pprint.TableFormatter` rather than adding an import.
 
 **PEP 695 `type X = ...`, not `X: TypeAlias = ...`.** Python ≥ 3.12 is required
 (#20223). `.ruff.toml` currently ignores UP040, so `TypeAlias` still lints clean today —
@@ -174,8 +206,8 @@ subclass, or where the *point* is to change class (`MaskedColumn.filled() -> Col
 type. Keep the flat implementation signature underneath. When a later fix widens a key
 union, add it to the overload, do not flatten.
 
-**`Literal` aliases beat repetition.** Define them in the module's `TYPE_CHECKING` block
-when a union of strings appears in more than two signatures. Check the sets are really
+**`Literal` aliases beat repetition.** Define them as module-level `type` statements
+(not under `TYPE_CHECKING`) when a union of strings appears in more than two signatures. Check the sets are really
 the same first — `operations.py` needed both `JoinType` and `StackJoinType` because
 stacking accepts `exact` and rejects `left`/`right`/`cartesian`.
 
@@ -196,8 +228,43 @@ are `Iterator[None]`. This is the single most common way a return annotation is 
 wrong.
 
 **Optional dependencies.** A return type from a lazily imported optional package
-(IPython, ipydatagrid, a DataFrame backend) is `Any` with a note, not a `TYPE_CHECKING`
-import of the package. `Table.show_in_notebook` set the precedent.
+(IPython, ipydatagrid, a DataFrame backend) is `Any` with a note
+(`Table.show_in_notebook` set the precedent), or a `TYPE_CHECKING` import where the
+module already deals in that package's types (`_dataframes.py` and pandas). Never a
+runtime import.
+
+### Why `__future__` stays (and when it goes)
+
+Measured on `astropy.table` (491 annotated functions, `check-type-hints.py`):
+
+| setup | `get_type_hints` resolves | fails |
+|---|---|---|
+| `__future__` + everything typing-only under `TYPE_CHECKING` (the original style) | 280 | 211 |
+| `__future__` + non-cyclic imports at runtime (**current convention**) | 440 | 51 |
+| no `__future__`, cosmology-style quoting, `Union[...]` | 430 | 61 |
+
+Quoting does not make anything resolvable: a quoted `"Table"` whose import is under
+`TYPE_CHECKING` fails exactly like an unquoted one under `__future__`. What helps is
+moving imports to runtime, and that works with either style. The 51 left are the floor
+for every approach — circular `Table`/`Column`, optional dependencies, `SkyCoord`.
+
+The quoting style is still forced on code without `__future__` until 3.13 is dropped
+(≈ Oct 2027 under SPEC 0): 3.12/3.13 evaluate annotations at `def` time, so a
+`TYPE_CHECKING` name must be quoted, and a quoted name cannot be an operand of `|`
+(`"Table" | None` is a `TypeError`), hence `Union["Table", None]`. On 3.14+ (PEP 649/749)
+annotations are lazy, quotes are unnecessary, and removing `from __future__ import
+annotations` becomes a pure deletion. `TYPE_CHECKING` itself does not go away on 3.14:
+optional dependencies and cycles still need it, until PEP 810 lazy imports (3.15) are
+available to the minimum supported Python.
+
+If the maintainers rule for dropping `__future__` now, the conversion is mechanical:
+move non-cyclic imports to runtime first (that removes ~70% of the work), then quote only
+the smallest expression containing each remaining name — the name itself, or the
+`Attribute`/`Subscript` built on it — and turn any `|` chain with a quoted operand into
+`Union[...]`. Use an AST pass, not regexes; verify by importing every module in a fresh
+3.13 process (eager evaluation makes the import itself the test) and with
+`check-type-hints.py`. For `table` the result was 114 quoted annotations, 36 of them
+`Union`; it is preserved as stash `pr20276-option3-no-future-cosmology-quoting`.
 
 **`*args` / `**kwargs`.** Adding a return annotation to a bare function makes ruff enforce
 ANN002 on `*args` — give it `*args: Any`. `**kwargs` stays bare (ANN003 ignored) and is
@@ -243,6 +310,10 @@ you do not:
   `# noqa` and a comment. **Never weaken an annotation to dodge a lint.**
 - **`from __future__ import annotations` triggers UP037** on every quoted forward
   reference already in the file. Unquote them in the same commit.
+- **Ruff does not check `TYPE_CHECKING` placement.** `TC` rules are not selected in
+  astropy, and with `__future__` an annotation using a `TYPE_CHECKING`-only name is never
+  an error. Only `check-type-hints.py` (or importing under 3.13 without `__future__`)
+  shows which names are missing at runtime.
 - **`conda run` drops stdin heredocs** and buffers output; scripts go in the scratchpad
   and run with the interpreter directly, with `PYTHONPATH=$PWD` so they import the
   worktree and not the main tree.
@@ -264,6 +335,10 @@ and once at the end, the downstream consumers too. For `table` that is
 `astropy/io/ascii astropy/time docs/time astropy/io/fits/tests/test_connect.py
 astropy/io/misc/tests/test_hdf5.py astropy/cosmology
 astropy/coordinates/tests/test_sky_coord.py`. Never the full suite unless asked.
+
+Per module and at the end: import every module of the subpackage in a fresh process
+(catches an import moved out of `TYPE_CHECKING` that cycles) and re-run
+`check-type-hints.py`; the resolved count must not drop.
 
 Never say tests pass without having run them; quote the real counts. After applying
 review fixes, re-run the behavior probes and confirm every case that raised still raises

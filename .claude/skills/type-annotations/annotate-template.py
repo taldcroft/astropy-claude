@@ -24,7 +24,10 @@ MODULE = "astropy/<subpackage>/<module>.py"
 
 # (old, new) pairs. Keep the header edit first so later pairs can rely on the imports.
 PAIRS: list[tuple[str, str]] = [
-    # --- module header: __future__ import, typing imports, TYPE_CHECKING block ---
+    # --- module header: __future__ import, then typing-only imports at RUNTIME ---
+    # Only circular imports and optional dependencies go under TYPE_CHECKING (here,
+    # Table, because table.py imports this module at load time). Test that an import
+    # does not cycle before moving it out of the block.
     (
         """# Licensed under a 3-clause BSD style license - see LICENSE.rst
 
@@ -33,14 +36,15 @@ import numpy as np
         """# Licensed under a 3-clause BSD style license - see LICENSE.rst
 from __future__ import annotations
 
+from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any, Self
 
 import numpy as np
 
-if TYPE_CHECKING:
-    from collections.abc import Iterator
+from ._typing import ColumnLike
 
-    from ._typing import ColumnLike
+if TYPE_CHECKING:
+    from .table import Table
 """,
     ),
     # --- defs, in file order ---

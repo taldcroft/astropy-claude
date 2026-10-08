@@ -15,6 +15,8 @@ directory). The handoff for the *adversarial reviewer* is a different document �
 - **PR #<N>** — "<title>", **draft** / ready, opened <date>. Rebase base: `<sha>`.
 - Coverage: <done>/<total> defs (`count-annotations.py astropy/<SUBPACKAGE> --skip ...`).
   On the rebase base it was <done>/<total>.
+- Runtime: `get_type_hints` resolves <ok>/<total> (`check-type-hints.py`); was <ok>.
+  The failures left are <circular imports / optional deps>.
 - Commits: one per module, each `[skip ci]`. <list any that are not>
 - Green: `ruff check`, `ruff format --check`, full `pre-commit`, and the test set in
   "Mechanics" below (<N passed>).
@@ -30,6 +32,9 @@ maintainer has reopened them:
 - No `py.typed` ships; that is the agreed mitigation for imprecise annotations.
 - Two-phase strategy: mechanical annotations as correct as the docstrings first,
   precision later. Not "few annotations, all correct".
+- `from __future__ import annotations` stays until 3.13 is dropped; typing-only imports
+  go at runtime unless they cycle or are optional dependencies (PR #20276, 2026-10).
+  Re-check the #20276 thread — nstarman asked for cosmology-style quoting instead.
 - Reviewer time is the real constraint. One commit per module; decline scope creep with
   a one-line reason (mutable defaults, dead-code removal, docstring fixes).
 
