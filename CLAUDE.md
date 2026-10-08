@@ -124,7 +124,7 @@ Two rules follow, and they are the only ways to get this wrong:
 
 The script copies the 18 built `*.so` files, symlinks `CLAUDE.md`, `.claude/` and
 `.vscode/`, and verifies the import. A PR **someone else** opened becomes
-`../astropy-pr-<number>-<branch>`; your own branch becomes `../astropy-pr-<branch>`. The
+`~/git/astropy-prs/<number>-<branch>`; your own branch becomes `~/git/astropy-prs/<branch>`. The
 number is included only where it is durable: for a review it is known up front and is how
 the PR gets referred to, whereas your own branch has no number yet when the worktree is
 made, and a later rename would orphan that directory's Claude session history. Pass the
@@ -133,8 +133,9 @@ both the number and the author. Looking a PR up by number also associates the
 branch with it for the VS Code **GitHub Pull Requests** extension, by writing the same
 `branch.<branch>.github-pr-owner-number = astropy#astropy#<number>` key that the
 extension's Check Out button writes — that key is what makes the Pull Request view
-(changes, comments, reviews) work in the new window. The `astropy-pr-` prefix keeps tab completion in `~/git/`
-useful, where many unrelated `astropy-*` directories live. Then `code <dir>` for its own
+(changes, comments, reviews) work in the new window. Grouping worktrees under
+`astropy-prs/` keeps them apart from the many unrelated `astropy-*` directories in
+`~/git/`. Then `code <dir>` for its own
 VS Code window and Claude session.
 
 The two things it does that a bare `git worktree add` does not:

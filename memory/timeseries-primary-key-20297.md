@@ -10,7 +10,7 @@ metadata:
 
 Work on astropy issue #20297 (and #11704, same root cause) was done on branch
 `fix-timeseries-primary-key` off upstream/main, created 2026-09-10. It superseded
-contributor PR #20354, which Tom reviewed on 2026-09-10 and then closed.
+contributor PR #20354, which Tom reviewed on 2026-09-10 and then closed. Its review worktree was removed 2026-10-08; the review is now in `pr-descriptions/pr20354-notes/pr-20354-review.md` in the main tree.
 
 **Status (2026-09-17):** split into two PRs at Tom's request.
 - Timeseries PR **#20361**: **merged** as of 2026-09-17. Fixes #20297 and #11704 on
@@ -18,7 +18,7 @@ contributor PR #20354, which Tom reviewed on 2026-09-10 and then closed.
   branch were removed on 2026-09-17. The handoff files (`notes-20297.md`,
   `pr-20354-review.md`, `pr-20354-reference.patch`, `pr20361-description.md`) were
   moved to `~/git/astropy/pr-descriptions/pr20361-notes/` in the main tree.
-- Table PR **#20362** (open): worktree `~/git/astropy-pr-table-primary-key-from-indices`,
+- Table PR **#20362** (open): worktree `~/git/astropy-prs/table-primary-key-from-indices`,
   branch `table-primary-key-from-indices`, pushed to origin. `table.py`,
   `test_index.py`, `docs/changes/table/20362.bugfix.rst`, description file
   `pr20362-description.md`. Independent of #20361 (disjoint files, verified by

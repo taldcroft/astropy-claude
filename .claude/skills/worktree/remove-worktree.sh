@@ -7,7 +7,7 @@
 #   remove-worktree.sh --force <target>           # ignore the safety refusals
 #
 # Targets resolve through the branch, not the directory name, so both naming forms
-# (astropy-pr-<number>-<branch> and astropy-pr-<branch>) are found either way.
+# (astropy-prs/<number>-<branch> and astropy-prs/<branch>) are found either way.
 #
 # Safe by default: it removes only the cruft that new-worktree.sh itself created
 # (the three symlinks, copied *.so files, caches). Anything else -- modified tracked
@@ -68,9 +68,10 @@ line=$(git -C "$main_tree" worktree list --porcelain \
 branch=${line#refs/heads/}
 [[ $wt != "$main_tree" ]] || die "refusing to remove the main tree"
 
-# A directory named astropy-pr-<number>-<branch> tells us the PR even when the target
+# A directory named astropy-prs/<number>-<branch> tells us the PR even when the target
 # given was a path or a branch name.
-if [[ -z $pr_number && $(basename "$wt") =~ ^astropy-pr-([0-9]+)- ]]; then
+if [[ -z $pr_number && $(basename "$(dirname "$wt")") == astropy-prs
+      && $(basename "$wt") =~ ^([0-9]+)- ]]; then
     pr_number=${BASH_REMATCH[1]}
 fi
 

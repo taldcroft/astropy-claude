@@ -1,7 +1,7 @@
 # Handoff: type annotations for `astropy.<SUBPACKAGE>`
 
 Untracked scratch doc for continuing the work in this worktree
-(`~/git/astropy-pr-<BRANCH>`, branch `<BRANCH>`). Delete it, along with
+(`~/git/astropy-prs/<BRANCH>`, branch `<BRANCH>`). Delete it, along with
 `external-review-prompt.md`, `codex-reviews/` and `pr<N>-description.md`, before running
 `remove-worktree.sh` — that script refuses to tear down a worktree with untracked
 non-build files.
@@ -83,7 +83,7 @@ without checking the thread first.>
 
 ```bash
 # ALWAYS from inside this worktree — cwd determines which source tree is imported
-cd ~/git/astropy-pr-<BRANCH>
+cd ~/git/astropy-prs/<BRANCH>
 conda run -n astropy-dev python -m pytest astropy/<SUBPACKAGE> docs/<SUBPACKAGE> -q -n auto
 conda run -n astropy-dev ruff check astropy/<SUBPACKAGE>/<mod>.py
 conda run -n astropy-dev ruff format astropy/<SUBPACKAGE>/<mod>.py

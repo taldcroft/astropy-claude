@@ -13,11 +13,12 @@ Naming, with slashes in the branch name turned into dashes:
 
 | Case | Directory |
 | --- | --- |
-| A PR someone else opened (you are reviewing it) | `../astropy-pr-<number>-<branch>` |
-| Your own branch, PR or not | `../astropy-pr-<branch>` |
+| A PR someone else opened (you are reviewing it) | `~/git/astropy-prs/<number>-<branch>` |
+| Your own branch, PR or not | `~/git/astropy-prs/<branch>` |
 
-The `astropy-pr-` prefix keeps shell tab completion useful — `~/git/` holds many
-unrelated `astropy-*` directories, and this narrows to worktrees in one tab.
+Keeping every worktree under `astropy-prs/` keeps them out of `~/git/`, which holds many
+unrelated `astropy-*` directories, so tab completion there and inside `astropy-prs/` both
+stay short.
 
 **Someone else's PR carries the number.** It is known up front, it never changes, and it
 is how the review gets referred to — "what did we decide on 20354" beats recalling the
@@ -162,7 +163,7 @@ found, on anything else:
 
 A branch fetched from `refs/pull/<number>/head` lives on the contributor's fork, which is
 not a remote here, so all of its commits look unpushed. When the worktree's PR number is
-known — given as the target, or read back out of an `astropy-pr-<number>-…` directory
+known — given as the target, or read back out of an `astropy-prs/<number>-…` directory
 name — the script compares the branch tip against the PR head and stays quiet when they
 match. Commits beyond the PR head still count as work and still refuse.
 

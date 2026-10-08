@@ -1,6 +1,6 @@
 ---
 name: config-fast-reads-20480
-description: "Config read cache + fast set_temp branch config-fast-reads (worktree astropy-pr-config-fast-reads), stacked on PR #20471; PR not yet opened as of 2026-09-25, expected number 20480"
+description: "Config read cache + fast set_temp branch config-fast-reads (worktree astropy-prs/config-fast-reads), stacked on PR #20471; PR not yet opened as of 2026-09-25, expected number 20480"
 metadata: 
   node_type: memory
   type: project
@@ -8,7 +8,7 @@ metadata:
   modified: 2026-09-25T09:56:07.597Z
 ---
 
-Branch `config-fast-reads` in worktree `/Users/aldcroft/git/astropy-pr-config-fast-reads`, one commit on top of PR #20471's branch `config-set-temp-thread-safe` (see [[config-set-temp-thread-safe-20471]]). Caches the validated value on `ConfigItem` keyed on identity of the stored object and the root ConfigObj; removes the `hasattr` read in `ConfigNamespace.set_temp/reload/reset`; class-based `_TempValue` context manager. Changelog fragment and `pr20480-description.md` use the guessed next number 20480; rename both if the real number differs. Plan copy at `notes-config-fast-reads-plan.md` in the worktree.
+Branch `config-fast-reads` in worktree `/Users/aldcroft/git/astropy-prs/config-fast-reads`, one commit on top of PR #20471's branch `config-set-temp-thread-safe` (see [[config-set-temp-thread-safe-20471]]). Caches the validated value on `ConfigItem` keyed on identity of the stored object and the root ConfigObj; removes the `hasattr` read in `ConfigNamespace.set_temp/reload/reset`; class-based `_TempValue` context manager. Changelog fragment and `pr20480-description.md` use the guessed next number 20480; rename both if the real number differs. Plan copy at `notes-config-fast-reads-plan.md` in the worktree.
 
 **Why:** user (2026-09-25) wanted it thread-safe, so it is stacked on #20471 rather than off main; a separate PR for reviewability. AI-disclosure box left unchecked for the user to tick after reviewing.
 

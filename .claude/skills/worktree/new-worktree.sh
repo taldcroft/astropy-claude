@@ -6,11 +6,12 @@
 #   new-worktree.sh <PR-number>           # head branch looked up via gh
 #   new-worktree.sh -b <branch> [start]   # brand-new branch, default start upstream/main
 #
-# Result: a sibling directory of the main tree with the built C extensions copied in and
-# CLAUDE.md, .claude/ and .vscode/ symlinked back to the main tree. Named:
+# Result: a directory under astropy-prs/, beside the main tree, with the built C
+# extensions copied in and CLAUDE.md, .claude/ and .vscode/ symlinked back to the main
+# tree. Named:
 #
-#   astropy-pr-<number>-<branch>   a PR someone else opened (reviewing their work)
-#   astropy-pr-<branch>            your own branch, PR or not
+#   astropy-prs/<number>-<branch>   a PR someone else opened (reviewing their work)
+#   astropy-prs/<branch>            your own branch, PR or not
 #
 # Someone else's PR carries the number because it is known up front, never changes, and
 # is how the review is referred to. Your own branch does not: its number does not exist
@@ -122,7 +123,7 @@ if [[ -n $pr_number ]]; then
         note "PR #$pr_number is yours -- directory named for the branch only"
     fi
 fi
-dir="$parent/astropy-pr-$slug"
+dir="$parent/astropy-prs/$slug"
 
 [[ -e $dir ]] && die "$dir already exists"
 

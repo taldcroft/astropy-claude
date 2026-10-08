@@ -3,10 +3,10 @@
 - [Astropy CI stale first-time contributor](astropy-ci-stale-first-time-contributor.md) — no Actions runs and no Approve button on an old fork PR: close and reopen re-triggers CI
 - [Worktree script imports main tree](worktree-script-imports-main-tree.md) — a script run by path from a worktree imports the main astropy tree; use PYTHONPATH=$PWD (and conda run drops stdin heredocs)
 - [Astropy no contributor-fork remotes](astropy-no-contributor-fork-remotes.md) — only origin/upstream remain since 2026-09-08; fetch PR heads via upstream pull refs, never re-add fork remotes.
-- [TimeSeries primary_key fix (#20297)](timeseries-primary-key-20297.md) — timeseries PR #20361 merged 2026-09-17 (worktree removed, notes in main tree pr-descriptions/pr20361-notes/); table PR #20362 still open in worktree astropy-pr-table-primary-key-from-indices
+- [TimeSeries primary_key fix (#20297)](timeseries-primary-key-20297.md) — timeseries PR #20361 merged 2026-09-17 (worktree removed, notes in main tree pr-descriptions/pr20361-notes/); table PR #20362 still open in worktree astropy-prs/table-primary-key-from-indices
 - [Table index memory leak fix (#16089)](table-index-memory-leak-16089.md) — PR #20456 merged 2026-09-22; worktree removed, notes in pr-descriptions/pr20456-notes/
 - [Skills live in astropy-claude repo](skills-live-in-astropy-claude-repo.md) — a worktree .claude/ resolves to the ~/git/astropy-claude git repo; new skills land there untracked and must be committed in that repo, not astropy
 - [Docstring param mismatch PRs](docstring-param-mismatch-prs.md) — #20437 merged 2026-09-25, #20438 closed unmerged; both worktrees removed, notes in pr-descriptions/pr20437-notes/ and pr20438-notes/
 - [ConfigItem.set_temp thread-safe (#20471)](config-set-temp-thread-safe-20471.md) — experimental draft opened 2026-09-23, unreviewed by user; units registry race is the next follow-up
-- [Config fast reads (#20480 expected)](config-fast-reads-20480.md) — perf branch config-fast-reads stacked on #20471, worktree astropy-pr-config-fast-reads, PR not yet opened
-- [Time strftime order fix (#20496)](time-strftime-order-20496.md) — fixes #20489, opened 2026-09-28, worktree astropy-pr-time-strftime-transposed-order
+- [Config fast reads (#20480 expected)](config-fast-reads-20480.md) — perf branch config-fast-reads stacked on #20471, worktree astropy-prs/config-fast-reads, PR not yet opened
+- [Time strftime order fix (#20496)](time-strftime-order-20496.md) — fixes #20489, merged; worktree removed 2026-10-08, notes in pr-descriptions/pr20496-notes/
