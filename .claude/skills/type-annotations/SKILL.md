@@ -166,6 +166,16 @@ comment, which is why `table.py` looks different from `table_helpers.py`. Get th
 and the docstring becomes a no-op expression and ruff flags every later import as E402.
 Then `from typing import TYPE_CHECKING, Any, Literal, Self, overload` as needed.
 
+**Arrays are `npt.NDArray`, never bare `np.ndarray`, in annotations.** `np.ndarray` is
+generic in shape and dtype, and reviewers object to leaving that implicit (neutrinoceros
+on #20276); `npt.NDArray` is the conventional spelling of "an array, dtype unspecified"
+and reads the same. Narrow to `npt.NDArray[np.bool_]` / `npt.NDArray[np.intp]` only where
+the code guarantees the dtype (masks, index arrays). Do not use `npt.ArrayLike` for
+"an array": it includes scalars and lists, which index unions must exclude. Runtime code
+(`isinstance(x, np.ndarray)`, base classes, `.view(np.ndarray)`) and docstrings keep
+`np.ndarray`. On `table` the switch was done after the fact by an AST pass over
+annotation nodes only (90 sites, commit `96bda64e15`); do it from the start instead.
+
 **Imports: runtime unless that is impossible.** Put typing-only imports in the normal
 import block: `collections.abc`, `numbers`, `types`, `contextlib`, `numpy.typing as npt`,
 `astropy.units` / `astropy.units.typing`, the package's `_typing` aliases, and package
@@ -218,7 +228,7 @@ assignment instead. `table` does this deliberately for `Row`, `Column`, `MaskedC
 `TableColumns`, `TableFormatter`.
 
 **Dunders.** `__eq__(self, other: object)`; ordering dunders take the actual accepted
-type. Return what the code returns — `np.bool_ | np.ndarray` for a comparison that hands
+type. Return what the code returns — `np.bool_ | npt.NDArray` for a comparison that hands
 off to numpy, not `bool`. `__or__` and friends: `other: object` when there is an
 `isinstance` guard with a `NotImplemented` fallback. Whether to spell the return as
 `Self | NotImplementedType` is a maintainer style call — flag it, do not decide it.

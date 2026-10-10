@@ -34,7 +34,7 @@ noise and will be discarded:
   signature would fail mypy/pyright, or that a type is insufficiently precise for a
   checker.
 - **Runtime annotation retrieval (`typing.get_type_hints()`) is a non-goal.**
-- **Imprecision is acceptable.** `np.ndarray` rather than `npt.NDArray[np.float64]`,
+- **Imprecision is acceptable.** `npt.NDArray` rather than `npt.NDArray[np.float64]`,
   `Any` rather than a protocol, `list` rather than `list[str]` — do not report these
   unless the annotation is *contradicted* by the code, not merely looser than possible.
 - **Bare `**kwargs` is intentional** and exempted via ruff ANN003.
