@@ -24,4 +24,4 @@ uncommitted and lose track of.
 committing *there*. Do not commit it yourself — CLAUDE.md's no-commit-without-review
 rule applies, and it is a different repo from the one being worked on. First seen when
 the `type-annotations` skill was created on 2026-09-17 from the
-`astropy-prs/table-add-type-annotations` worktree. Related: [[worktree-script-imports-main-tree]].
+`astropy-prs/table-add-type-annotations` worktree (PR #20276, merged 2026-10-08; worktree removed, notes in pr-descriptions/pr20276-notes/). Related: [[worktree-script-imports-main-tree]].
