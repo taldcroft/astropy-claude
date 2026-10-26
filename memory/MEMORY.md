@@ -17,3 +17,4 @@
 - [Review of #20599 bytes/text](review-20599-bytes-text.md) — ngoldbaum PR merged 2026-10-20; worktree removed 2026-10-26, notes in pr-descriptions/pr20599-notes/; spin-off issue #20663
 - [Review of #20506 TDAT parser](review-20506-tdat-parsing.md) — jrunge777 PR, second-round draft in worktree astropy-prs/20506-tdat-add-error-trapping/pr20506-review.md, not yet posted
 - [Table group_by perf (#20721)](table-group-by-perf-20721.md) — experimental draft, radix sort for numeric keys; branch table-group-by-perf in worktree astropy-prs/table-group-by-pandas; unreviewed by user
+- [Branch cleanup bundle](branch-cleanup-bundle-2026-10-26.md) — 185 branches deleted 2026-10-26; all backed up in ~/git/astropy-branches-2026-10-26.bundle; origin cleanup still pending
